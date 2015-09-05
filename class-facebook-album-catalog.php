@@ -2,15 +2,14 @@
 
 class FacebookAlbumCatalog {
 	public $fb;
+	public $html = '';
 
-	public $test;
-
-	public function albumName($name) {
+	public function getAlbum($name) {
 		$response = $this->fb->get('/me?fields=albums');
 		$node = $response->getGraphNode();
 		$albums = $node->getField('albums');
-		$album_id = '';
 
+		// Find specified album
 		foreach ($albums as $a) {
 			if ($a['name'] == $name) {
 				$album_id = $a['id'];
@@ -18,18 +17,69 @@ class FacebookAlbumCatalog {
 			}
 		}
 
+		if ($album_id == false) {
+			$this->html = "<p>Album \"$name\" not found.</p>";
+			return;
+		}
+		
 		$response = $this->fb->get("/$album_id?fields=photos");
 		$node = $response->getGraphNode();
 		$photos = $node->getField('photos');
-		$photo_ids = array();
 
 		foreach ($photos as $p) {
-			$photo_ids[] = $p['id'];
-			if ($p['name'] != null) {
-				$photo_ids[] = $p['name'];
-			}
+			$album_photo = new Photo($p['id'], $this->fb);
+			$this->html .= '<img src="' . $album_photo->sources[0]->url . '" alt="' . $album_photo->title . '">';
 		}
+	}
+}
 
-		$this->test = $photo_ids;
+class Photo {
+	public $id;
+	public $name;
+	public $price;
+	public $title;
+	public $desc;
+	public $sources = array();
+
+	protected $fb;
+
+	public function __construct($id, $fb) {
+		$this->id = $id;
+		$this->fb = $fb;
+		
+		$this->getInfo();
+		$this->parseName();
+	}
+
+	protected function getInfo() {
+		$response = $this->fb->get("/$this->id?fields=name,images");
+		$node = $response->getGraphNode();
+		$this->name = $node->getField('name');
+		$images = $node->getField('images');
+
+		foreach ($images as $img) {
+			$this->sources[] = new PhotoSource($img['width'], $img['height'], $img['source']);
+		}
+	}
+
+	protected function parseName() {
+		$lines = explode("\n", str_replace("\r", '', $this->name));
+		$this->price = $lines[0];
+		unset($lines[0]);
+		$this->title = $lines[1];
+		unset($lines[1]);
+		$this->desc = implode("\n", $lines);
+	}
+}
+
+class PhotoSource {
+	public $width;
+	public $height;
+	public $url;
+
+	public function __construct($width, $height, $url) {
+		$this->width = $width;
+		$this->height = $height;
+		$this->url = $url;
 	}
 }
