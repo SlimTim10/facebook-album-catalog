@@ -28,7 +28,15 @@ class FacebookAlbumCatalog {
 
 		foreach ($photos as $p) {
 			$album_photo = new Photo($p['id'], $this->fb);
-			$this->html .= '<img src="' . $album_photo->sources[0]->url . '" alt="' . $album_photo->title . '">';
+			$this->html .= '<a href="' . $album_photo->sources[0]->url . '">';
+			foreach ($album_photo->sources as $src) {
+				if ($src->height == '225') {
+					$this->html .= '<img src="' . $src->url . '" alt="' . $album_photo->title . '">';
+					break;
+				}
+			}
+			$this->html .= '</a>';
+			// $this->html .= '<pre>' . var_export($album_photo, true) . '</pre>'; // DEBUGGING
 		}
 	}
 }
