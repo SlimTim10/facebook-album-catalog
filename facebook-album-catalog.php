@@ -23,6 +23,7 @@ function admin_register_settings() {
 	register_setting('facebook-album-catalog', 'app_id');
 	register_setting('facebook-album-catalog', 'app_secret');
 	register_setting('facebook-album-catalog', 'access_token');
+	register_setting('facebook-album-catalog', 'album_name');
 }
 
 function admin_options_menu() {
@@ -32,13 +33,14 @@ function admin_options_menu() {
 
 add_action('admin_menu', 'admin_options_menu');
 
-function create_catalog() {
+function init_catalog() {
 	$catalog = new FacebookAlbumCatalog();
 
 	// Configure through admin panel
 	$app_id = get_option('app_id');
 	$app_secret = get_option('app_secret');
 	$access_token = get_option('access_token');
+	$album_name = get_option('album_name');
 
 	$catalog->fb = new Facebook\Facebook([
 		'app_id' => $app_id,
@@ -47,7 +49,7 @@ function create_catalog() {
 		'default_access_token' => $access_token,
 	]);
 
-	$catalog->albumName('Cute Animals');
+	$catalog->getAlbum($album_name);
 
 	return $catalog;
 }
@@ -57,10 +59,8 @@ function facebook_album_catalog_show ($atts) {
 		'id' => '0',
 	), $atts, 'facebook_album_catalog' );
 
-	$catalog = create_catalog();
+	$catalog = init_catalog();
 
-	$ret = '<pre>' . var_export($catalog->test, true) . '</pre>';
-	
-	return $ret;
+	return $catalog->html;
 }
 add_shortcode('facebook_album_catalog', 'facebook_album_catalog_show');
