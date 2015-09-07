@@ -64,3 +64,9 @@ function facebook_album_catalog_show ($atts) {
 	return $catalog->html;
 }
 add_shortcode('facebook_album_catalog', 'facebook_album_catalog_show');
+
+function register_plugin_styles() {
+	wp_register_style( 'facebook-album-catalog', plugins_url( 'facebook-album-catalog/css/catalog.css' ) );
+	wp_enqueue_style( 'facebook-album-catalog' );
+}
+add_action( 'wp_enqueue_scripts', 'register_plugin_styles' );

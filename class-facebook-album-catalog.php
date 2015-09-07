@@ -21,12 +21,16 @@ class FacebookAlbumCatalog {
 			$this->html = "<p>Album \"$name\" not found.</p>";
 			return;
 		}
+
+		$this->html .= '<ul class="products">';
+		$this->html .= "\n";
 		
 		$response = $this->fb->get("/$album_id?fields=photos");
 		$node = $response->getGraphNode();
 		$photos = $node->getField('photos');
 
 		foreach ($photos as $p) {
+			$this->html .= '<li>';
 			$album_photo = new Photo($p['id'], $this->fb);
 			$this->html .= '<a href="' . $album_photo->sources[0]->url . '">';
 			foreach ($album_photo->sources as $src) {
@@ -36,8 +40,12 @@ class FacebookAlbumCatalog {
 				}
 			}
 			$this->html .= '</a>';
+			$this->html .= '</li>';
 			// $this->html .= '<pre>' . var_export($album_photo, true) . '</pre>'; // DEBUGGING
 		}
+
+		$this->html .= "\n";
+		$this->html .= '</ul>';
 	}
 }
 
