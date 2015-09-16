@@ -1,7 +1,25 @@
-ul.products li {
-	width: 200px;
-	display: inline-block;
-	vertical-align: top;
-	*display: inline;
-	*zoom: 1;
+.catalog {
+	overflow: hidden;
+	/* margin: 7px; */
+	background: #EEE;
+}
+
+.catalog-box {
+	float: left;
+	position: relative;
+	overflow: hidden;
+	margin-left: 0.1%;
+	margin-right: 0.1%;
+	margin-bottom: 5%
+}
+
+.catalog-box-img {
+	display: block;
+	width: 225px;
+	height: 225px;
+	position: relative;
+	background-color: transparent;
+	background-position: 50% 25%;
+	background-repeat: no-repeat;
+	background-size: cover;
 }

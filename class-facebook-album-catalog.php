@@ -22,30 +22,32 @@ class FacebookAlbumCatalog {
 			return;
 		}
 
-		$this->html .= '<ul class="products">';
-		$this->html .= "\n";
+		$this->html .= '<div class="catalog">' . "\n";
 		
 		$response = $this->fb->get("/$album_id?fields=photos");
 		$node = $response->getGraphNode();
 		$photos = $node->getField('photos');
 
 		foreach ($photos as $p) {
-			$this->html .= '<li>';
 			$album_photo = new Photo($p['id'], $this->fb);
-			$this->html .= '<a href="' . $album_photo->sources[0]->url . '">';
+			$full_img = $album_photo->sources[0]->url;
+			$small_img = '';
 			foreach ($album_photo->sources as $src) {
 				if ($src->height == '225') {
-					$this->html .= '<img src="' . $src->url . '" alt="' . $album_photo->title . '">';
+					$small_img = $src->url;
 					break;
 				}
 			}
-			$this->html .= '</a>';
-			$this->html .= '</li>';
+			$this->html .= '<a href="' . $full_img . '">' . "\n";
+			$this->html .= '<div class="catalog-box">' . "\n";
+			$this->html .= '<span class="catalog-box-img" style="background-image: url(' . $small_img . ');"></span>' . "\n";
+			// $this->html .= '<img src="' . $src->url . '" alt="' . $album_photo->title . '">';
+			$this->html .= '</div>' . "\n";
+			$this->html .= '</a>' . "\n";
 			// $this->html .= '<pre>' . var_export($album_photo, true) . '</pre>'; // DEBUGGING
 		}
 
-		$this->html .= "\n";
-		$this->html .= '</ul>';
+		$this->html .= '</div>';
 	}
 }
 
