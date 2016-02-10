@@ -54,7 +54,7 @@ function init_catalog() {
 	return $catalog;
 }
 
-function facebook_album_catalog_show ($atts) {
+function facebook_album_catalog_show($atts) {
 	$atts = shortcode_atts( array(
 		'id' => '0',
 	), $atts, 'facebook_album_catalog' );
