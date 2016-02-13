@@ -34,6 +34,8 @@ function admin_options_menu() {
 add_action('admin_menu', 'admin_options_menu');
 
 function init_catalog() {
+	session_start();
+	
 	$catalog = new FacebookAlbumCatalog();
 
 	// Configure through admin panel
@@ -48,6 +50,33 @@ function init_catalog() {
 		'default_graph_version' => 'v2.4',
 		'default_access_token' => $access_token,
 	]);
+
+	/* $access_token = $catalog->fb->get('/oauth/access_token?client_id=' . $app_id
+	   . '&amp;client_secret=' . $app_secret
+	   . '&amp;grant_type=client_credentials'); */
+
+	$cilent = $catalog->fb->getOAuth2Client();
+	try {
+		// Returns a long-lived access token
+		$accessToken = $cilent->getLongLivedAccessToken($access_token);
+	} catch(Facebook\Exceptions\FacebookSDKException $e) {
+		// There was an error communicating with Graph
+		echo $e->getMessage();
+		exit;
+	}
+
+	// Returns expiration as a DateTime entity
+	$expiresAt = $accessToken->getExpiresAt();
+	// Returns boolean
+	$expired = $accessToken->isExpired();
+	// Returns boolean
+	$isLong = $accessToken->isLongLived();
+
+	echo 'Expires at: '. $expiresAt;
+	echo '<br>';
+	echo 'Expired: ' . $expired;
+	echo '<br>';
+	echo 'Is long-lived: ' . $isLong;
 
 	$catalog->getAlbum($album_name);
 
