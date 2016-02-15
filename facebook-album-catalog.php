@@ -22,7 +22,6 @@ function admin_register_settings() {
 	register_setting('facebook-album-catalog', 'app_id');
 	register_setting('facebook-album-catalog', 'app_secret');
 	register_setting('facebook-album-catalog', 'page_id');
-	register_setting('facebook-album-catalog', 'album_name');
 }
 
 function admin_options_menu() {
@@ -33,8 +32,6 @@ function admin_options_menu() {
 add_action('admin_menu', 'admin_options_menu');
 
 function init_catalog() {
-	session_start();
-	
 	$catalog = new FacebookAlbumCatalog();
 
 	// Configure through admin panel
@@ -42,17 +39,17 @@ function init_catalog() {
 	$catalog->fb['app_secret'] = get_option('app_secret');
 	$catalog->fb['page_id'] = get_option('page_id');
 
-	$catalog->getAlbum(get_option('album_name'));
-
 	return $catalog;
 }
 
 function facebook_album_catalog_show($atts) {
-	$atts = shortcode_atts( array(
+	$a = shortcode_atts(array(
 		'id' => '0',
+		'album' => '',
 	), $atts, 'facebook_album_catalog' );
 
 	$catalog = init_catalog();
+	$catalog->getAlbum($a['album']);
 
 	return $catalog->html;
 }

@@ -1,4 +1,5 @@
-* TODO Use shortcode attribute for album name
+* DONE Use shortcode attribute for album name
+  CLOSED: [2016-02-15 Mon 18:17]
 - http://codex.wordpress.org/Shortcode_API
 * TODO Fix catalog formatting
 * TODO Pagination
