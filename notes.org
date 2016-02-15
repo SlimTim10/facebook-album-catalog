@@ -1,0 +1,11 @@
+* TODO Use shortcode attribute for album name
+- http://codex.wordpress.org/Shortcode_API
+* TODO Fix catalog formatting
+* TODO Pagination
+- Shortcode option for images per page
+* Theme ideas
+- http://oenogallery.com/artists/paul-fournier/
+- http://whitney.org/Exhibitions/Upcoming
+- http://www.aliceteichert.com/paintings-2013.php
+- http://www.suzannemetz.com/art-gallery.php?artwork=Painting&start=0&limit=9&page=1
+

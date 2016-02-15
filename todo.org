@@ -1,4 +1,0 @@
-* TODO Fix catalog formatting
-* TODO Use shortcode attribute for album name
-* TODO Permanent access token
-* TODO Price optional
