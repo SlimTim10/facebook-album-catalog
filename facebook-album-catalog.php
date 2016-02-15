@@ -10,7 +10,6 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 */
 
 require_once __DIR__ . '/class-facebook-album-catalog.php';
-require_once __DIR__ . '/lib/facebook-php-sdk-v4-5.0-dev/src/Facebook/autoload.php';
 
 function admin_options() {
 	if (!current_user_can('manage_options'))  {
@@ -22,7 +21,7 @@ function admin_options() {
 function admin_register_settings() {
 	register_setting('facebook-album-catalog', 'app_id');
 	register_setting('facebook-album-catalog', 'app_secret');
-	register_setting('facebook-album-catalog', 'access_token');
+	register_setting('facebook-album-catalog', 'page_id');
 	register_setting('facebook-album-catalog', 'album_name');
 }
 
@@ -39,46 +38,11 @@ function init_catalog() {
 	$catalog = new FacebookAlbumCatalog();
 
 	// Configure through admin panel
-	$app_id = get_option('app_id');
-	$app_secret = get_option('app_secret');
-	$access_token = get_option('access_token');
-	$album_name = get_option('album_name');
+	$catalog->fb['app_id'] = get_option('app_id');
+	$catalog->fb['app_secret'] = get_option('app_secret');
+	$catalog->fb['page_id'] = get_option('page_id');
 
-	$catalog->fb = new Facebook\Facebook([
-		'app_id' => $app_id,
-		'app_secret' => $app_secret,
-		'default_graph_version' => 'v2.4',
-		'default_access_token' => $access_token,
-	]);
-
-	/* $access_token = $catalog->fb->get('/oauth/access_token?client_id=' . $app_id
-	   . '&amp;client_secret=' . $app_secret
-	   . '&amp;grant_type=client_credentials'); */
-
-	$cilent = $catalog->fb->getOAuth2Client();
-	try {
-		// Returns a long-lived access token
-		$accessToken = $cilent->getLongLivedAccessToken($access_token);
-	} catch(Facebook\Exceptions\FacebookSDKException $e) {
-		// There was an error communicating with Graph
-		echo $e->getMessage();
-		exit;
-	}
-
-	// Returns expiration as a DateTime entity
-	$expiresAt = $accessToken->getExpiresAt();
-	// Returns boolean
-	$expired = $accessToken->isExpired();
-	// Returns boolean
-	$isLong = $accessToken->isLongLived();
-
-	echo 'Expires at: '. $expiresAt;
-	echo '<br>';
-	echo 'Expired: ' . $expired;
-	echo '<br>';
-	echo 'Is long-lived: ' . $isLong;
-
-	$catalog->getAlbum($album_name);
+	$catalog->getAlbum(get_option('album_name'));
 
 	return $catalog;
 }
