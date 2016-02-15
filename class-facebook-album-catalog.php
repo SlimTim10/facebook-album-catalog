@@ -1,34 +1,60 @@
 <?php
 
+function fb_graph_json($id, $access_token, $fields) {
+	$url = "https://graph.facebook.com/$id/?access_token=$access_token&fields=$fields";
+	$resp = wp_remote_get(esc_url_raw($url));
+	return json_decode(wp_remote_retrieve_body($resp), true);
+}
+
 class FacebookAlbumCatalog {
-	public $fb;
+	public $fb = [];
 	public $html = '';
 
 	public function getAlbum($name) {
-		$response = $this->fb->get('/me?fields=albums');
-		$node = $response->getGraphNode();
-		$albums = $node->getField('albums');
-
-		// Find specified album
-		foreach ($albums as $a) {
-			if ($a['name'] == $name) {
-				$album_id = $a['id'];
-				break;
-			}
-		}
-
-		if ($album_id == false) {
-			$this->html = "<p>Album \"$name\" not found.</p>";
+		$access_token = $this->fb['app_id'] . '|' . $this->fb['app_secret'];
+		
+		$response = fb_graph_json($this->fb['page_id'], $access_token, 'albums');
+		if (isset($response['error'])) {
+			$this->html = '<p>Error: ' . $response['error']['message'] . '</p>';
 			return;
 		}
-
-		$this->html .= '<div class="catalog">' . "\n";
+		if (empty($response['albums'])) {
+			$this->html = '<p>Error: Could not find albums';
+			return;
+		}
+		$albums = $response['albums']['data'];
+		$album_id = $this->findAlbumId($albums, $name);
+		if (empty($album_id)) {
+			$this->html = "<p>Error: Album $name not found</p>";
+			return;
+		}
 		
-		$response = $this->fb->get("/$album_id?fields=photos");
-		$node = $response->getGraphNode();
-		$photos = $node->getField('photos');
+		$response = fb_graph_json($album_id, $access_token, 'photos');
+		if (isset($response['error'])) {
+			$this->html = '<p>Error: ' . $response['error']['message'] . '</p>';
+			return;
+		}
+		if (empty($response['photos'])) {
+			$this->html = '<p>Error: Could not find photos';
+			return;
+		}
+		$photos = $response['photos']['data'];
 
-		foreach ($photos as $p) {
+		$this->html = $this->createCatalog($photos);
+	}
+
+	protected function findAlbumId($albums, $name) {
+		foreach ($albums as $a) {
+			if ($a['name'] == $name) {
+				return $a['id'];
+			}
+		}
+		return;
+	}
+
+	protected function createCatalog($photos_json) {
+		$html = '<div class="catalog">' . "\n";
+		foreach ($photos_json as $p) {
 			$album_photo = new Photo($p['id'], $this->fb);
 			$full_img = $album_photo->sources[0]->url;
 			$small_img = '';
@@ -38,16 +64,17 @@ class FacebookAlbumCatalog {
 					break;
 				}
 			}
-			$this->html .= '<a href="' . $full_img . '">' . "\n";
-			$this->html .= '<div class="catalog-box">' . "\n";
-			$this->html .= '<span class="catalog-box-img" style="background-image: url(' . $small_img . ');"></span>' . "\n";
-			// $this->html .= '<img src="' . $src->url . '" alt="' . $album_photo->title . '">';
-			$this->html .= '</div>' . "\n";
-			$this->html .= '</a>' . "\n";
-			// $this->html .= '<pre>' . var_export($album_photo, true) . '</pre>'; // DEBUGGING
+			$html .= '<a href="' . $full_img . '">' . "\n";
+			$html .= '<div class="catalog-box">' . "\n";
+			$html .= '<span class="catalog-box-img" style="background-image: url(' . $small_img . ');"></span>' . "\n";
+			// $html .= '<img src="' . $src->url . '" alt="' . $album_photo->title . '">';
+			$html .= '</div>' . "\n";
+			$html .= '</a>' . "\n";
+			// $html .= '<pre>' . var_export($album_photo, true) . '</pre>'; // DEBUGGING
 		}
+		$html .= '</div>';
 
-		$this->html .= '</div>';
+		return $html;
 	}
 }
 
@@ -57,7 +84,7 @@ class Photo {
 	public $price;
 	public $title;
 	public $desc;
-	public $sources = array();
+	public $sources = [];
 
 	protected $fb;
 
@@ -70,10 +97,10 @@ class Photo {
 	}
 
 	protected function getInfo() {
-		$response = $this->fb->get("/$this->id?fields=name,images");
-		$node = $response->getGraphNode();
-		$this->name = $node->getField('name');
-		$images = $node->getField('images');
+		$access_token = $this->fb['app_id'] . '|' . $this->fb['app_secret'];
+		$response = fb_graph_json($this->id, $access_token, 'name,images');
+		$this->name = $response['name'];
+		$images = $response['images'];
 
 		foreach ($images as $img) {
 			$this->sources[] = new PhotoSource($img['width'], $img['height'], $img['source']);
