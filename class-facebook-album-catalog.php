@@ -56,7 +56,7 @@ class FacebookAlbumCatalog {
 		$html = '<div class="catalog">' . "\n";
 		foreach ($photos_json as $p) {
 			$album_photo = new Photo($p['id'], $this->fb);
-			$full_img = $album_photo->sources[0]->url;
+			$full_img = $album_photo->sources[0]['url'];
 			$small_img = $album_photo->getImgURL(900, 900);
 			$html .= '<a href="' . $full_img . '">' . "\n";
 			$html .= '<div class="catalog-box">' . "\n";
@@ -94,13 +94,13 @@ class Photo {
 	public function getImgURL($max_width, $max_height) {
 		$sorted_sources = $this->sources;
 		usort($sorted_sources, function($a, $b) {
-			return $b->height - $a->height;
+			return $b['height'] - $a['height'];
 		});
 		foreach ($sorted_sources as $src) {
-			$width = intval($src->width);
-			$height = intval($src->height);
+			$width = intval($src['width']);
+			$height = intval($src['height']);
 			if ($width <= $max_width && $height <= $max_height) {
-				return $src->url;
+				return $src['url'];
 			}
 		}
 	}
@@ -112,7 +112,11 @@ class Photo {
 		$images = $response['images'];
 
 		foreach ($images as $img) {
-			$this->sources[] = new PhotoSource($img['width'], $img['height'], $img['source']);
+			$this->sources[] = [
+				'width' => $img['width'],
+				'height' =>$img['height'],
+				'url' => $img['source'],
+			];
 		}
 	}
 
@@ -123,17 +127,5 @@ class Photo {
 		$this->title = $lines[1];
 		unset($lines[1]);
 		$this->desc = implode("\n", $lines);
-	}
-}
-
-class PhotoSource {
-	public $width;
-	public $height;
-	public $url;
-
-	public function __construct($width, $height, $url) {
-		$this->width = $width;
-		$this->height = $height;
-		$this->url = $url;
 	}
 }
