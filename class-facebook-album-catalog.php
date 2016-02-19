@@ -57,13 +57,7 @@ class FacebookAlbumCatalog {
 		foreach ($photos_json as $p) {
 			$album_photo = new Photo($p['id'], $this->fb);
 			$full_img = $album_photo->sources[0]->url;
-			$small_img = '';
-			foreach ($album_photo->sources as $src) {
-				if ($src->height == '225') {
-					$small_img = $src->url;
-					break;
-				}
-			}
+			$small_img = $album_photo->getImgURL(900, 900);
 			$html .= '<a href="' . $full_img . '">' . "\n";
 			$html .= '<div class="catalog-box">' . "\n";
 			$html .= '<span class="catalog-box-img" style="background-image: url(' . $small_img . ');"></span>' . "\n";
@@ -94,6 +88,21 @@ class Photo {
 		
 		$this->getInfo();
 		$this->parseName();
+	}
+
+	/* Return the source URL of the image with the maximum given dimensions or the next one smaller */
+	public function getImgURL($max_width, $max_height) {
+		$sorted_sources = $this->sources;
+		usort($sorted_sources, function($a, $b) {
+			return $b->height - $a->height;
+		});
+		foreach ($sorted_sources as $src) {
+			$width = intval($src->width);
+			$height = intval($src->height);
+			if ($width <= $max_width && $height <= $max_height) {
+				return $src->url;
+			}
+		}
 	}
 
 	protected function getInfo() {
