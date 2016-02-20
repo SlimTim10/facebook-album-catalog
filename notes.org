@@ -1,12 +1,7 @@
 * DONE Use shortcode attribute for album name
   CLOSED: [2016-02-15 Mon 18:17]
 - http://codex.wordpress.org/Shortcode_API
-* TODO Fix catalog formatting
+* DONE Fix catalog formatting
+  CLOSED: [2016-02-20 Sat 13:12]
 * TODO Pagination
 - Shortcode option for images per page
-* Theme ideas
-- http://oenogallery.com/artists/paul-fournier/
-- http://whitney.org/Exhibitions/Upcoming
-- http://www.aliceteichert.com/paintings-2013.php
-- http://www.suzannemetz.com/art-gallery.php?artwork=Painting&start=0&limit=9&page=1
-
