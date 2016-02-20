@@ -7,12 +7,12 @@
 .fb-grid {
 	padding: 0.25em;
 	overflow: hidden;
-	list-style-type: none;
 }
 
 .fb-grid li {
 	float: left;
 	width: 50%;
+	list-style-type: none;
 }
 
 .fb-grid li:nth-child(odd) {
@@ -31,6 +31,7 @@
 	color: #000;
 	background-color: #FFF;
 	transition: all 0.3s;
+	text-decoration: none;
 }
 
 .fb-item a:hover {
@@ -40,6 +41,10 @@
 
 .fb-item-details {
 	font-family: 'Poppins', sans-serif;
+}
+
+.fb-item-details p {
+	margin: 0px !important;
 }
 
 .fb-item-subject {
