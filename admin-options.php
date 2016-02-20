@@ -22,23 +22,14 @@
 	  </tr>
 	  <tr>
 		<th scope="row">
-		  <label for="access_token"><?php _e('Access Token') ?></label>
+		  <label for="page_id"><?php _e('Page ID') ?></label>
 		</th>
 		<td>
-		  <input name="access_token" type="text" id="access_token" value="<?php esc_attr_e(get_option('access_token')); ?>" class="regular-text ltr"/>
-		</td>
-	  </tr>
-	  <tr>
-		<th scope="row">
-		  <label for="album_name"><?php _e('Album Name') ?></label>
-		</th>
-		<td>
-		  <input name="album_name" type="text" id="album_name" value="<?php esc_attr_e(get_option('album_name')); ?>" class="regular-text ltr"/>
+		  <input name="page_id" type="text" id="page_id" value="<?php esc_attr_e(get_option('page_id')); ?>" class="regular-text ltr"/>
 		</td>
 	  </tr>
 	</table>
 	<?php submit_button(); ?>
 	<p>To get the app ID and app secret, go to your <a target="blank" href="https://developers.facebook.com/apps/">app in Facebook Developers</a>.</p>
-	<p>To get your access token, go to the <a target="blank" href="https://developers.facebook.com/tools/explorer/">Graph API Explorer</a>.</p>
   </form>
 </div>

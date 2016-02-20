@@ -1,0 +1,7 @@
+* DONE Use shortcode attribute for album name
+  CLOSED: [2016-02-15 Mon 18:17]
+- http://codex.wordpress.org/Shortcode_API
+* DONE Fix catalog formatting
+  CLOSED: [2016-02-20 Sat 13:12]
+* TODO Pagination
+- Shortcode option for images per page

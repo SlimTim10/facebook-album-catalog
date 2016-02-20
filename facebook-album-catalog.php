@@ -10,7 +10,6 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 */
 
 require_once __DIR__ . '/class-facebook-album-catalog.php';
-require_once __DIR__ . '/lib/facebook-php-sdk-v4-5.0-dev/src/Facebook/autoload.php';
 
 function admin_options() {
 	if (!current_user_can('manage_options'))  {
@@ -22,8 +21,7 @@ function admin_options() {
 function admin_register_settings() {
 	register_setting('facebook-album-catalog', 'app_id');
 	register_setting('facebook-album-catalog', 'app_secret');
-	register_setting('facebook-album-catalog', 'access_token');
-	register_setting('facebook-album-catalog', 'album_name');
+	register_setting('facebook-album-catalog', 'page_id');
 }
 
 function admin_options_menu() {
@@ -37,30 +35,28 @@ function init_catalog() {
 	$catalog = new FacebookAlbumCatalog();
 
 	// Configure through admin panel
-	$app_id = get_option('app_id');
-	$app_secret = get_option('app_secret');
-	$access_token = get_option('access_token');
-	$album_name = get_option('album_name');
-
-	$catalog->fb = new Facebook\Facebook([
-		'app_id' => $app_id,
-		'app_secret' => $app_secret,
-		'default_graph_version' => 'v2.4',
-		'default_access_token' => $access_token,
-	]);
-
-	$catalog->getAlbum($album_name);
+	$catalog->fb['app_id'] = get_option('app_id');
+	$catalog->fb['app_secret'] = get_option('app_secret');
+	$catalog->fb['page_id'] = get_option('page_id');
 
 	return $catalog;
 }
 
-function facebook_album_catalog_show ($atts) {
-	$atts = shortcode_atts( array(
+function facebook_album_catalog_show($atts) {
+	$a = shortcode_atts(array(
 		'id' => '0',
+		'album' => '',
 	), $atts, 'facebook_album_catalog' );
 
 	$catalog = init_catalog();
+	$catalog->getAlbum($a['album']);
 
 	return $catalog->html;
 }
 add_shortcode('facebook_album_catalog', 'facebook_album_catalog_show');
+
+function register_plugin_styles() {
+	wp_register_style( 'facebook-album-catalog', plugins_url( 'facebook-album-catalog/css/catalog.css' ) );
+	wp_enqueue_style( 'facebook-album-catalog' );
+}
+add_action( 'wp_enqueue_scripts', 'register_plugin_styles' );
