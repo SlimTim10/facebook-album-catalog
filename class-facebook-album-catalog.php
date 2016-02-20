@@ -53,23 +53,27 @@ class FacebookAlbumCatalog {
 	}
 
 	protected function createCatalog($photos_json) {
-		$html = '<div class="catalog">' . "\n";
+		$html = '<div id="facebook-album-catalog">' . "\n";
+		$html .= '<ul class="fb-grid">' . "\n";
 		foreach ($photos_json as $p) {
 			$album_photo = new Photo($p['id'], $this->fb);
 			$full_img = $album_photo->sources[0]['url'];
-			$small_img = $album_photo->getImgURL(900, 900);
+			$small_img = $album_photo->getImgURL(320, 320);
+			$html .= '<li class="fb-item">' . "\n";
 			$html .= '<a href="' . $full_img . '">' . "\n";
-			$html .= '<div class="catalog-box">' . "\n";
-			$html .= '<span class="catalog-box-img" style="background-image: url(' . $small_img . ');"></span>' . "\n";
+			$html .= '<div class="fb-item-thumbnail">' . "\n";
+			$html .= '<img title="' . $album_photo->title . '" alt="' . $album_photo->title . '" src="' . $small_img . '">' . "\n";
+			$html .= '</div>' . "\n";
+			$html .= '<div class="fb-item-details">' . "\n";
+			$html .= '<p class="fb-item-subject">' . $album_photo->subject . '</p>' . "\n";
+			$html .= '<p class="fb-item-price">' . $album_photo->price . '</p>' . "\n";
+			$html .= '<p class="fb-item-size">' . $album_photo->size . '</p>' . "\n";
+			$html .= '<p class="fb-item-title">' . $album_photo->title . '</p>' . "\n";
 			$html .= '</div>' . "\n";
 			$html .= '</a>' . "\n";
-			$html .= '<div>' . "\n";
-			$html .= $album_photo->subject;
-			$html .= $album_photo->price;
-			$html .= $album_photo->size;
-			$html .= $album_photo->title;
-			$html .= '</div>' . "\n";
+			$html .= '</li>' . "\n";
 		}
+		$html .= '</ul>';
 		$html .= '</div>';
 
 		return $html;

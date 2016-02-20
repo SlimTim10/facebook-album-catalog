@@ -1,25 +1,82 @@
-.catalog {
-	overflow: hidden;
-	/* margin: 7px; */
-	background: #FFF;
+@import url(https://fonts.googleapis.com/css?family=Poppins);
+
+#facebook-album-catalog {
+	width: 100%;
 }
 
-.catalog-box {
+.fb-grid {
+	padding: 0.25em;
+	overflow: hidden;
+	list-style-type: none;
+}
+
+.fb-grid li {
 	float: left;
-	position: relative;
-	overflow: hidden;
-	margin-left: 0.1%;
-	margin-right: 0.1%;
-	margin-bottom: 5%
+	width: 50%;
 }
 
-.catalog-box-img {
+.fb-grid li:nth-child(odd) {
+	clear: left;
+}
+
+.fb-item-thumbnail img {
+	margin: 0 auto;
 	display: block;
-	width: 225px;
-	height: 225px;
-	position: relative;
-	background-color: transparent;
-	background-position: 50% 25%;
-	background-repeat: no-repeat;
-	background-size: cover;
+}
+
+.fb-item a {
+	padding: 3.0em;
+	text-align: center;
+	display: block;
+	color: #000;
+	background-color: #FFF;
+	transition: all 0.3s;
+}
+
+.fb-item a:hover {
+	background-color: #EEE;
+	color: #000;
+}
+
+.fb-item-details {
+	font-family: 'Poppins', sans-serif;
+}
+
+.fb-item-subject {
+	font-size: 18px;
+	margin: 5px 0px 5px 0px;
+}
+
+.fb-item-price {
+	font-size: 16px;
+	margin: 0px 0px 5px 0px;
+}
+
+.fb-item-size {
+	font-size: 16px;
+	margin: 0px 0px 5px 0px;
+}
+
+.fb-item-title {
+	font-style: italic;
+	font-size: 20px;
+	margin: 0px 0px 0px 0px;
+}
+
+@media screen and (min-width: 768px) {
+	.fb-grid li {
+		width: 33.3333333333333333%; 
+	}
+	.fb-grid li:nth-child(3n+1) {
+		clear: left;
+	}
+	.fb-grid li:nth-child(odd) {
+		clear: none;
+	}
+}
+
+@media screen and (max-width: 400px) {
+	.fb-grid li {
+		width: 100%;
+	}
 }
