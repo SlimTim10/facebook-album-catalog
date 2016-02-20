@@ -61,10 +61,14 @@ class FacebookAlbumCatalog {
 			$html .= '<a href="' . $full_img . '">' . "\n";
 			$html .= '<div class="catalog-box">' . "\n";
 			$html .= '<span class="catalog-box-img" style="background-image: url(' . $small_img . ');"></span>' . "\n";
-			// $html .= '<img src="' . $src->url . '" alt="' . $album_photo->title . '">';
 			$html .= '</div>' . "\n";
 			$html .= '</a>' . "\n";
-			// $html .= '<pre>' . var_export($album_photo, true) . '</pre>'; // DEBUGGING
+			$html .= '<div>' . "\n";
+			$html .= $album_photo->subject;
+			$html .= $album_photo->price;
+			$html .= $album_photo->size;
+			$html .= $album_photo->title;
+			$html .= '</div>' . "\n";
 		}
 		$html .= '</div>';
 
@@ -74,10 +78,13 @@ class FacebookAlbumCatalog {
 
 class Photo {
 	public $id;
-	public $name;
+	public $description;
+	
+	public $subject;
 	public $price;
+	public $size;
 	public $title;
-	public $desc;
+	
 	public $sources = [];
 
 	protected $fb;
@@ -85,9 +92,14 @@ class Photo {
 	public function __construct($id, $fb) {
 		$this->id = $id;
 		$this->fb = $fb;
+
+		$this->subject = '';
+		$this->price = '';
+		$this->size = '';
+		$this->title = '';
 		
 		$this->getInfo();
-		$this->parseName();
+		$this->parseDescription();
 	}
 
 	/* Return the source URL of the image with the maximum given dimensions or the next one smaller */
@@ -108,7 +120,7 @@ class Photo {
 	protected function getInfo() {
 		$access_token = $this->fb['app_id'] . '|' . $this->fb['app_secret'];
 		$response = fb_graph_json($this->id, $access_token, 'name,images');
-		$this->name = $response['name'];
+		$this->description = $response['name'];
 		$images = $response['images'];
 
 		foreach ($images as $img) {
@@ -120,12 +132,13 @@ class Photo {
 		}
 	}
 
-	protected function parseName() {
-		$lines = explode("\n", str_replace("\r", '', $this->name));
-		$this->price = $lines[0];
-		unset($lines[0]);
-		$this->title = $lines[1];
-		unset($lines[1]);
-		$this->desc = implode("\n", $lines);
+	protected function parseDescription() {
+		$lines = explode("\n", str_replace("\r", '', $this->description));
+		$this->subject = $lines[0];
+		$this->price = $lines[1];
+		$this->size = $lines[2];
+		$this->title = $lines[3];
+		/* $this->desc = implode("\n", $lines); */
+		unset($lines);
 	}
 }
