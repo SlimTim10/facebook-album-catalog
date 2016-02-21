@@ -7,7 +7,7 @@ function fb_graph_json($id, $access_token, $fields) {
 }
 
 class FacebookAlbumCatalog {
-	public $fb = [];
+	public $fb = array();
 	public $html = '';
 
 	public function getAlbum($name) {
@@ -89,7 +89,7 @@ class Photo {
 	public $size;
 	public $title;
 	
-	public $sources = [];
+	public $sources = array();
 
 	protected $fb;
 
@@ -128,11 +128,11 @@ class Photo {
 		$images = $response['images'];
 
 		foreach ($images as $img) {
-			$this->sources[] = [
+			$this->sources[] = array(
 				'width' => $img['width'],
 				'height' =>$img['height'],
 				'url' => $img['source'],
-			];
+			);
 		}
 	}
 
