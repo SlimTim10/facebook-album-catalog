@@ -2,7 +2,7 @@
 /*
 Plugin Name: Facebook Album Catalog
 Description: Display a catalog that is dynamically linked to a Facebook album.
-Version:     1.0
+Version:     1.0.0
 Author:      SlimTim10
 Author URI:  https://github.com/SlimTim10
 License:     GPL2
