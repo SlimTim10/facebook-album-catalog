@@ -8,7 +8,10 @@ function fb_graph_json($id, $access_token, $fields) {
 
 class FacebookAlbumCatalog {
 	public $fb = array();
+	public $config = array();
 	public $html = '';
+
+	const ITEMS_PER_PAGE_DEFAULT = 9;
 
 	public function getAlbum($name) {
 		$access_token = $this->fb['app_id'] . '|' . $this->fb['app_secret'];
@@ -53,9 +56,25 @@ class FacebookAlbumCatalog {
 	}
 
 	protected function createCatalog($photos_json) {
+		$items_per_page = !empty($this->config['items_per_page']) ?
+			intval($this->config['items_per_page']) :
+			self::ITEMS_PER_PAGE_DEFAULT;
+		$page = isset($_GET['page']) ?
+			intval($_GET['page']) :
+			1;
+		$start = ($page - 1) * $items_per_page;
+		if (!($start > 0 && $start < count($photos_json))) {
+			$start = 0;
+		}
+		$end = $start + $items_per_page;
+		if ($end > count($photos_json)) {
+			$end = count($photos_json);
+		}
+		
 		$html = '<div id="facebook-album-catalog">' . "\n";
 		$html .= '<ul class="fb-grid">' . "\n";
-		foreach ($photos_json as $p) {
+		for ($i = $start; $i < $end; $i++) {
+			$p = $photos_json[$i];
 			$album_photo = new Photo($p['id'], $this->fb);
 			$full_img = $album_photo->sources[0]['url'];
 			$small_img = $album_photo->getImgURL(320, 320);
@@ -74,6 +93,17 @@ class FacebookAlbumCatalog {
 			$html .= '</li>' . "\n";
 		}
 		$html .= '</ul>';
+
+		$total_pages = ceil(count($photos_json) / $items_per_page);
+		if ($total_pages > 1) {
+			$html .= '<div class="fb-pagination">' . "\n";
+			$html .= '<a href="?page=' . max($page - 1, 1) . '" class="fb-page">&lt;</a>' . "\n";
+			for ($i = 0; $i < $total_pages; $i++) {
+				$html .= '<a href="?page=' . ($i + 1) . '" class="fb-page">' . ($i + 1) . '</a>' . "\n";
+			}
+			$html .= '<a href="?page=' . min($page + 1, $total_pages) . '" class="fb-page">&gt;</a>' . "\n";
+		}
+		
 		$html .= '</div>';
 
 		return $html;
