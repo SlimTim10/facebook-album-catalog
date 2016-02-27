@@ -22,6 +22,7 @@ function admin_register_settings() {
 	register_setting('facebook-album-catalog', 'app_id');
 	register_setting('facebook-album-catalog', 'app_secret');
 	register_setting('facebook-album-catalog', 'page_id');
+	register_setting('facebook-album-catalog', 'items_per_page');
 }
 
 function admin_options_menu() {
@@ -38,6 +39,7 @@ function init_catalog() {
 	$catalog->fb['app_id'] = get_option('app_id');
 	$catalog->fb['app_secret'] = get_option('app_secret');
 	$catalog->fb['page_id'] = get_option('page_id');
+	$catalog->config['items_per_page'] = get_option('items_per_page');
 
 	return $catalog;
 }
