@@ -28,6 +28,14 @@
 		  <input name="page_id" type="text" id="page_id" value="<?php esc_attr_e(get_option('page_id')); ?>" class="regular-text ltr"/>
 		</td>
 	  </tr>
+	  <tr>
+		<th scope="row">
+		  <label for="items_per_page"><?php _e('Items Per Page') ?></label>
+		</th>
+		<td>
+		  <input name="items_per_page" type="text" id="items_per_page" value="<?php esc_attr_e(get_option('items_per_page')); ?>" class="regular-text ltr"/>
+		</td>
+	  </tr>
 	</table>
 	<?php submit_button(); ?>
 	<p>To get the app ID and app secret, go to your <a target="blank" href="https://developers.facebook.com/apps/">app in Facebook Developers</a>.</p>
