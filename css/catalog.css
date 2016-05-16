@@ -11,12 +11,7 @@
 
 .fb-grid li {
 	float: left;
-	width: 50%;
 	list-style-type: none;
-}
-
-.fb-grid li:nth-child(odd) {
-	clear: left;
 }
 
 .fb-item-thumbnail img {
@@ -75,12 +70,18 @@
 	.fb-grid li:nth-child(3n+1) {
 		clear: left;
 	}
+}
+
+@media screen and (min-width: 481px) and (max-width: 767px) {
+	.fb-grid li {
+		width: 50%;
+	}
 	.fb-grid li:nth-child(odd) {
-		clear: none;
+		clear: left;
 	}
 }
 
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 480px) {
 	.fb-grid li {
 		width: 100%;
 	}
