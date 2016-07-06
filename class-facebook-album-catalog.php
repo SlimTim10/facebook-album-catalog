@@ -85,7 +85,6 @@ class FacebookAlbumCatalog {
 			$html .= '</div>' . "\n";
 			$html .= '<div class="fb-item-details">' . "\n";
 			$html .= '<p class="fb-item-subject">' . $album_photo->subject . '</p>' . "\n";
-			$html .= '<p class="fb-item-price">' . $album_photo->price . '</p>' . "\n";
 			$html .= '<p class="fb-item-size">' . $album_photo->size . '</p>' . "\n";
 			$html .= '<p class="fb-item-title">' . $album_photo->title . '</p>' . "\n";
 			$html .= '</div>' . "\n";
@@ -115,7 +114,6 @@ class Photo {
 	public $description;
 	
 	public $subject;
-	public $price;
 	public $size;
 	public $title;
 	
@@ -128,7 +126,6 @@ class Photo {
 		$this->fb = $fb;
 
 		$this->subject = '';
-		$this->price = '';
 		$this->size = '';
 		$this->title = '';
 		
@@ -169,9 +166,8 @@ class Photo {
 	protected function parseDescription() {
 		$lines = explode("\n", str_replace("\r", '', $this->description));
 		$this->subject = $lines[0];
-		$this->price = $lines[1];
-		$this->size = $lines[2];
-		$this->title = $lines[3];
+		$this->size = $lines[1];
+		$this->title = $lines[2];
 		/* $this->desc = implode("\n", $lines); */
 		unset($lines);
 	}
